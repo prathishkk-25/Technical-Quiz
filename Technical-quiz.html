@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Technical Quiz</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+/* ================= RESET ================= */
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:#020617;
+color:white;
+overflow-x:hidden;
+cursor:none; /* hide default cursor */
+}
+
+/* ================= CURSOR GLOW ================= */
+.cursor-glow{
+position:fixed;
+width:220px;
+height:220px;
+border-radius:50%;
+pointer-events:none;
+background:radial-gradient(circle,
+rgba(96,165,250,0.35),
+rgba(147,51,234,0.25),
+transparent 70%);
+filter:blur(40px);
+transform:translate(-50%,-50%);
+z-index:9999;
+}
+
+/* ================= TECH BACKGROUND ================= */
+#techCanvas{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-2;
+}
+
+/* ================= CONTAINER ================= */
+.container{
+max-width:1100px;
+margin:auto;
+padding:60px 20px;
+text-align:center;
+}
+
+/* ================= TITLES ================= */
+.page-name{
+font-size:60px;
+letter-spacing:3px;
+color:#94a3b8;
+text-transform:uppercase;
+margin-bottom:10px;
+}
+
+.title{
+font-size:36px;
+margin-bottom:25px;
+}
+
+/* ================= COMMON GLASS STYLE ================= */
+.glass{
+background:rgba(255,255,255,0.07);
+backdrop-filter:blur(18px);
+border-radius:18px;
+border:1px solid rgba(255,255,255,0.18);
+box-shadow:
+0 8px 32px rgba(0,0,0,0.4),
+inset 0 0 12px rgba(255,255,255,0.05);
+}
+
+/* ================= COUNTDOWN ================= */
+.countdown{
+display:flex;
+justify-content:center;
+gap:20px;
+margin-bottom:40px;
+flex-wrap:wrap;
+}
+
+.time-box{
+padding:15px 25px;
+min-width:90px;
+}
+
+.time-box h2{font-size:28px;}
+.time-box span{font-size:12px;color:#cbd5e1;}
+
+/* ================= DESCRIPTION ================= */
+.quiz-description{
+max-width:850px;
+margin:0 auto 50px;
+padding:30px;
+line-height:1.9;
+}
+
+/* ================= ROUND CARDS ================= */
+.quiz-rounds{
+display:flex;
+justify-content:center;
+gap:35px;
+flex-wrap:wrap;
+perspective:1200px;
+}
+
+.round-card{
+width:260px;
+height:190px;
+position:relative;
+transform-style:preserve-3d;
+transition:transform .8s;
+cursor:pointer;
+}
+
+.round-card:hover,
+.round-card.flip{
+transform:rotateY(180deg);
+}
+
+/* SAME COLOR + GLASS AS ABOVE BOXES */
+.card-face{
+position:absolute;
+width:100%;
+height:100%;
+padding:20px;
+border-radius:18px;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
+backface-visibility:hidden;
+
+background:rgba(255,255,255,0.07);
+backdrop-filter:blur(18px);
+border:1px solid rgba(255,255,255,0.18);
+box-shadow:
+0 8px 32px rgba(0,0,0,0.4),
+inset 0 0 12px rgba(255,255,255,0.05);
+}
+
+/* subtle glow */
+.card-face:hover{
+box-shadow:
+0 0 25px rgba(96,165,250,0.35),
+0 8px 32px rgba(0,0,0,0.5);
+}
+
+.card-front{
+font-size:24px;
+font-weight:600;
+color:#60a5fa;
+}
+
+.card-back{
+transform:rotateY(180deg);
+font-size:15px;
+line-height:1.7;
+color:#e2e8f0;
+}
+
+/* ================= BUTTON ================= */
+.register-btn{
+margin-top:60px;
+}
+
+.register-btn a{
+padding:14px 32px;
+border-radius:30px;
+text-decoration:none;
+color:white;
+font-weight:600;
+background:linear-gradient(135deg,#2563eb,#9333ea);
+box-shadow:0 0 20px rgba(147,51,234,.5);
+transition:.3s;
+}
+
+.register-btn a:hover{
+transform:scale(1.08);
+}
+
+/* FOOTER */
+.footer{
+margin-top:40px;
+color:#94a3b8;
+}
+
+</style>
+</head>
+
+<body>
+
+<canvas id="techCanvas"></canvas>
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<div class="container">
+
+<div class="page-name">Technical Quiz</div>
+<div class="title">Information Technology</div>
+
+<!-- COUNTDOWN -->
+<div class="countdown">
+<div class="time-box glass"><h2 id="days">0</h2><span>DAYS</span></div>
+<div class="time-box glass"><h2 id="hours">0</h2><span>HOURS</span></div>
+<div class="time-box glass"><h2 id="minutes">0</h2><span>MINUTES</span></div>
+<div class="time-box glass"><h2 id="seconds">0</h2><span>SECONDS</span></div>
+</div>
+
+<!-- DESCRIPTION -->
+<div class="quiz-description glass">
+This technical quiz evaluates engineering knowledge, analytical thinking,
+and awareness of modern technologies through interactive challenges.
+</div>
+
+<!-- ROUNDS -->
+<div class="quiz-rounds">
+
+<div class="round-card">
+<div class="card-face card-front">Round 1 <br> Online Platform</div>
+<div class="card-face card-back">
+MCQ will be conducted on an online platform with 30 questions within 30 minutes.
+</div>
+</div>
+
+<div class="round-card">
+<div class="card-face card-front">Round 2 <br> Normal Quiz</div>
+<div class="card-face card-back">
+Each participant will answer questions sequentially demonstrating conceptual clarity.
+</div>
+</div>
+
+<div class="round-card">
+<div class="card-face card-front">Round 3 <br> Rapid Fire</div>
+<div class="card-face card-back">
+In this round the First correct answer gains marks whereas the Wrong answers carry negative marking.
+</div>
+</div>
+
+</div>
+
+<div class="register-btn">
+<a href="https://forms.gle/dLoKsVHmPvPeSckU6" target="_blank">Register for Event →</a>
+</div>
+
+<div class="footer">© Texperia 2026</div>
+
+</div>
+
+<script>
+
+/* ================= MOBILE TAP FLIP ================= */
+document.querySelectorAll(".round-card").forEach(card=>{
+card.addEventListener("click",()=>{
+card.classList.toggle("flip");
+});
+});
+
+/* ================= CURSOR GLOW ================= */
+const glow=document.getElementById("cursorGlow");
+
+document.addEventListener("mousemove",(e)=>{
+glow.style.left=e.clientX+"px";
+glow.style.top=e.clientY+"px";
+});
+
+/* ================= COUNTDOWN ================= */
+const targetDate=new Date("March 12, 2026 00:00:00").getTime();
+
+setInterval(()=>{
+const now=new Date().getTime();
+const gap=targetDate-now;
+
+days.innerText=Math.floor(gap/(1000*60*60*24));
+hours.innerText=Math.floor((gap%(1000*60*60*24))/(1000*60*60));
+minutes.innerText=Math.floor((gap%(1000*60*60))/(1000*60));
+seconds.innerText=Math.floor((gap%(1000*60))/1000);
+},1000);
+
+/* ================= TECH QUIZ BACKGROUND ================= */
+const canvas=document.getElementById("techCanvas");
+const ctx=canvas.getContext("2d");
+
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let nodes=[];
+
+class Node{
+constructor(){
+this.x=Math.random()*canvas.width;
+this.y=Math.random()*canvas.height;
+this.vx=(Math.random()-0.5)*0.6;
+this.vy=(Math.random()-0.5)*0.6;
+}
+update(){
+this.x+=this.vx;
+this.y+=this.vy;
+if(this.x<0||this.x>canvas.width)this.vx*=-1;
+if(this.y<0||this.y>canvas.height)this.vy*=-1;
+}
+draw(){
+ctx.fillStyle="rgba(96,165,250,0.8)";
+ctx.fillRect(this.x,this.y,2,2);
+}
+}
+
+for(let i=0;i<90;i++)nodes.push(new Node());
+
+function connect(){
+for(let a=0;a<nodes.length;a++){
+for(let b=a;b<nodes.length;b++){
+let dx=nodes[a].x-nodes[b].x;
+let dy=nodes[a].y-nodes[b].y;
+let dist=Math.sqrt(dx*dx+dy*dy);
+
+if(dist<120){
+ctx.strokeStyle="rgba(96,165,250,0.08)";
+ctx.beginPath();
+ctx.moveTo(nodes[a].x,nodes[a].y);
+ctx.lineTo(nodes[b].x,nodes[b].y);
+ctx.stroke();
+}
+}
+}
+}
+
+function animate(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+nodes.forEach(n=>{
+n.update();
+n.draw();
+});
+
+connect();
+requestAnimationFrame(animate);
+}
+
+animate();
+
+window.onresize=()=>{
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+};
+
+</script>
+
+</body>
+</html>
